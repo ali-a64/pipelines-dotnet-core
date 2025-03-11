@@ -3,7 +3,7 @@
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
-# Azure DevOps Pipeline for .NET Core with Missing Tools Fix
+# Azure DevOps Pipeline for .NET Core with Fixed Missing Tools Installation
 
 trigger:
 - master
@@ -16,9 +16,12 @@ variables:
 
 steps:
 - script: |
+    echo "Installing missing tools..."
     sudo apt update
-    sudo apt install -y nuget mono-complete terraform
-  displayName: 'Install Missing Tools (NuGet, Mono, Terraform)'
+    sudo apt install -y apt-transport-https ca-certificates gnupg software-properties-common
+    sudo apt install -y nuget
+    wget -qO- https://aka.ms/InstallAzureCLIDeb | sudo bash
+  displayName: 'Install Missing Tools (NuGet, Azure CLI)'
 
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'Build .NET Core Project'
