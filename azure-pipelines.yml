@@ -3,6 +3,8 @@
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
+# Azure DevOps Pipeline for .NET Core with Missing Tools Fix
+
 trigger:
 - master
 
@@ -13,5 +15,10 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- script: |
+    sudo apt update
+    sudo apt install -y nuget mono-complete terraform
+  displayName: 'Install Missing Tools (NuGet, Mono, Terraform)'
+
 - script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+  displayName: 'Build .NET Core Project'
